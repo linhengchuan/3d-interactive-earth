@@ -127,8 +127,18 @@ function latLngToVector3(lat, lng, radius) {
 
 // Create markers and labels
 const markers = [];
-const markerGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+// Pin geometry settings
+const pinHeight = 0.5;
+const pinHeadSize = 0.2; // Increased from 0.1 to 0.2
+const hitAreaSize = 0.4; // Larger invisible area for easier clicking
+const markerGeometry = new THREE.SphereGeometry(pinHeadSize, 16, 16);
+const hitAreaGeometry = new THREE.SphereGeometry(hitAreaSize, 16, 16);
 const markerMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+const hitAreaMaterial = new THREE.MeshBasicMaterial({
+  transparent: true,
+  opacity: 0,
+  depthWrite: false, // Ensures the invisible sphere doesn't interfere with rendering
+});
 
 const fontLoader = new THREE.FontLoader();
 fontLoader.load(
@@ -148,34 +158,59 @@ fontLoader.load(
 
     // Function to create and position both marker and label
     function createLocationMarker(location) {
-      // Create marker
-      const position = latLngToVector3(
+      const surfacePosition = latLngToVector3(
         location.lat,
         location.lng,
         earth_radius
       );
-      const marker = new THREE.Mesh(markerGeometry, markerMaterial.clone());
-      marker.position.copy(position);
-      marker.userData = location;
-      markers.push(marker);
-      earthGroup.add(marker);
+      const pinPosition = latLngToVector3(
+        location.lat,
+        location.lng,
+        earth_radius + pinHeight
+      );
+
+      // Create hit area (invisible larger sphere)
+      const hitArea = new THREE.Mesh(hitAreaGeometry, hitAreaMaterial);
+      hitArea.position.copy(pinPosition);
+      hitArea.userData = location;
+      markers.push(hitArea);
+
+      // Create visible pin head
+      const pinHead = new THREE.Mesh(markerGeometry, markerMaterial.clone());
+      pinHead.position.copy(pinPosition);
+
+      // Create pin line
+      const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+        surfacePosition,
+        pinPosition,
+      ]);
+      const lineMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
+      const line = new THREE.Line(lineGeometry, lineMaterial);
+
+      // Add all elements to earth group
+      earthGroup.add(hitArea);
+      earthGroup.add(pinHead);
+      earthGroup.add(line);
 
       // Create label
       const textGeometry = new THREE.TextGeometry(location.name, textConfig);
-      const textMaterial = new THREE.MeshStandardMaterial({ color: "black" });
+      textGeometry.computeBoundingBox();
+      const textMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff }); // Changed to white
       const textMesh = new THREE.Mesh(textGeometry, textMaterial);
 
+      // Position text above and slightly to the right of the pin
+      const textOffset = 0.5; // Adjust this value to change text position
       const labelPosition = latLngToVector3(
         location.lat,
         location.lng,
-        earth_radius + 0.2
+        earth_radius + pinHeight + textOffset
       );
       textMesh.position.copy(labelPosition);
 
-      // Orient label
-      textMesh.lookAt(0, 0, 0);
-      textMesh.rotateX(Math.PI);
-      textMesh.rotateZ(Math.PI);
+      // Make text billboard (always face camera)
+      textMesh.onBeforeRender = function (renderer, scene, camera) {
+        textMesh.quaternion.copy(camera.quaternion);
+      };
 
       earthGroup.add(textMesh);
     }
@@ -233,39 +268,22 @@ document.getElementById("refreshButton").addEventListener("click", () => {
 
 // Rotation toggle variables
 let rotateObjects = false; // Track whether rotation is enabled
-let rotationInterval = null; // Store the interval ID
 
 // Add rotation toggle functionality
 document.getElementById("rotateButton").addEventListener("click", () => {
   rotateObjects = !rotateObjects;
-  if (rotateObjects) {
-    startRotation();
-  } else {
-    stopRotation();
-  }
 });
-
-// Function to start Earth rotation
-function startRotation() {
-  if (!rotationInterval) {
-    rotationInterval = setInterval(() => {
-      earthGroup.rotation.y += 0.005;
-      starSystem.rotation.y += 0.001;
-    }, 100);
-  }
-}
-
-// Function to stop Earth rotation
-function stopRotation() {
-  if (rotationInterval) {
-    clearInterval(rotationInterval);
-    rotationInterval = null;
-  }
-}
 
 // Animation loop
 function animate() {
   requestAnimationFrame(animate);
+
+  // Add smooth rotation here
+  if (rotateObjects) {
+    earthGroup.rotation.y += 0.002; // Reduced rotation speed for smoother motion
+    starSystem.rotation.y += 0.0004; // Reduced rotation speed for stars
+  }
+
   controls.update(); // Required for damping
   renderer.render(scene, camera);
 }
