@@ -1,86 +1,107 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Interactive Globe</title>
     <style>
-        body { margin: 0; }
-        canvas { display: block; }
-        #info {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: rgb(172, 39, 206);
-            font-family: Arial, sans-serif;
-        }
-        .popup {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.8);
-            color: rgb(31, 188, 17);
-            padding: 10px;
-            border-radius: 5px;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            pointer-events: none;
-            display: none;
-            max-width: 200px;
-        }
-        .marker-label {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.8);
-            color: rgb(66, 20, 217);
-            padding: 3px 6px;
-            border-radius: 3px;
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-            pointer-events: none;
-            display: none;
-        }
-        .reset-view-button {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            background-color: #ffffff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 1000;
-            font-family: Arial, sans-serif;
-            transition: background-color 0.3s;
-        }
-        .reset-view-button:hover {
-            background-color: #f0f0f0;
-        }
-        #refreshButton, #rotateButton {
-            position: fixed;
-            left: 10px; /* Distance from the left edge */
-            padding: 10px 20px;
-            background-color: #7800b9; /* Button background color */
-            opacity: 0.5;
-            color: #000000; /* Text color */
-            border: none; /* Remove border */
-            border-radius: 5px; /* Rounded corners */
-            cursor: pointer;
-            z-index: 1000; /* Ensure it appears above the canvas */
-        }
+      body {
+        margin: 0;
+      }
+      canvas {
+        display: block;
+      }
+      #info {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        color: rgb(172, 39, 206);
+        font-family: Arial, sans-serif;
+      }
+      .popup {
+        display: none;
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 300px;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        color: rgb(31, 188, 17);
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+      }
 
-        #refreshButton {
-            top: 40%; /* Vertically centered for Refresh button */
-            transform: translateY(-50%);
-        }
+      .close-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        color: rgb(31, 188, 17);
+        font-size: 20px;
+        cursor: pointer;
+      }
+      .marker-label {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.8);
+        color: rgb(66, 20, 217);
+        padding: 3px 6px;
+        border-radius: 3px;
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        pointer-events: none;
+        display: none;
+      }
+      .reset-view-button {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        padding: 10px 20px;
+        background-color: #ffffff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        z-index: 1000;
+        font-family: Arial, sans-serif;
+        transition: background-color 0.3s;
+      }
+      .reset-view-button:hover {
+        background-color: #f0f0f0;
+      }
+      #refreshButton,
+      #rotateButton {
+        position: fixed;
+        left: 10px; /* Distance from the left edge */
+        padding: 10px 20px;
+        background-color: #7800b9; /* Button background color */
+        opacity: 0.5;
+        color: #000000; /* Text color */
+        border: none; /* Remove border */
+        border-radius: 5px; /* Rounded corners */
+        cursor: pointer;
+        z-index: 1000; /* Ensure it appears above the canvas */
+      }
 
-        #rotateButton {
-            top: 50%; /* Vertically centered for Rotation button */
-            transform: translateY(-50%);
-        }
+      #refreshButton {
+        top: 40%; /* Vertically centered for Refresh button */
+        transform: translateY(-50%);
+      }
+
+      #rotateButton {
+        top: 50%; /* Vertically centered for Rotation button */
+        transform: translateY(-50%);
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="info">Drag to rotate, scroll to zoom</div>
-    <div id="popup" class="popup"></div>
+    <div id="popup" class="popup">
+      <button class="close-button" id="closePanel">×</button>
+      <div id="panelContent"></div>
+    </div>
     <!-- <div id="reset-view-button" class="reset-view-button">Reset</div> -->
     <script src="./index.js" type="module"></script>
     <button id="refreshButton">Reset</button>
     <button id="rotateButton">Toggle Rotation</button>
-</body>
+  </body>
 </html>
