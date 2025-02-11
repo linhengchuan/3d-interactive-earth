@@ -280,11 +280,29 @@ function animate() {
 
   // Add smooth rotation here
   if (rotateObjects) {
-    earthGroup.rotation.y += 0.002; // Reduced rotation speed for smoother motion
-    starSystem.rotation.y += 0.0004; // Reduced rotation speed for stars
+    earthGroup.rotation.y += 0.0005;
+    starSystem.rotation.y += 0.0002;
   }
 
-  controls.update(); // Required for damping
+  // Update all text meshes to face camera
+  earthGroup.traverse((object) => {
+    if (
+      object instanceof THREE.Mesh &&
+      object.geometry instanceof THREE.TextGeometry
+    ) {
+      // Get the world position of the text
+      const worldPos = new THREE.Vector3();
+      object.getWorldPosition(worldPos);
+
+      // Make the text look at the camera
+      object.lookAt(camera.position);
+
+      // Counter-rotate for the earth's rotation to maintain correct orientation
+      object.rotation.y += earthGroup.rotation.y;
+    }
+  });
+
+  controls.update();
   renderer.render(scene, camera);
 }
 
