@@ -138,17 +138,71 @@ function latLngToVector3(lat, lng, radius) {
 // Create markers and labels
 const markers = [];
 // Pin geometry settings
-const pinHeight = 0.5;
-const pinHeadSize = 0.2; // Increased from 0.1 to 0.2
-const hitAreaSize = 0.4; // Larger invisible area for easier clicking
-const markerGeometry = new THREE.SphereGeometry(pinHeadSize, 16, 16);
-const hitAreaGeometry = new THREE.SphereGeometry(hitAreaSize, 16, 16);
+const pinHeight = 0.1;
+const pinHeadSize = 0.06;
+const hitAreaSize = 0.4;
+const ringRadius = 0.3; // Increased ring size
+const ringSegments = 32;
+
+// Create hit area geometry
+const hitAreaGeometry = new THREE.SphereGeometry(hitAreaSize, 8, 8);
+
+// Create materials
 const markerMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 const hitAreaMaterial = new THREE.MeshBasicMaterial({
   transparent: true,
   opacity: 0,
-  depthWrite: false, // Ensures the invisible sphere doesn't interfere with rendering
+  depthWrite: false,
 });
+
+// Function to create a radiating ring
+function createRadiatingRing(position) {
+  const ring = new THREE.Group();
+
+  // Calculate elevated position
+  const surfaceNormal = position.clone().normalize();
+  const elevatedPosition = position
+    .clone()
+    .add(surfaceNormal.multiplyScalar(0.095));
+
+  // Center dot using CircleGeometry for flat 2D look
+  const centerGeometry = new THREE.CircleGeometry(pinHeadSize, 16);
+  const centerPoint = new THREE.Mesh(centerGeometry, markerMaterial.clone());
+  ring.add(centerPoint);
+
+  // Single radiating ring
+  const ringGeometry = new THREE.RingGeometry(
+    ringRadius * 1.3,
+    ringRadius,
+    ringSegments
+  );
+  const ringMaterial = new THREE.MeshBasicMaterial({
+    color: 0xff0000,
+    transparent: true,
+    opacity: 1,
+    side: THREE.DoubleSide,
+  });
+  const ringMesh = new THREE.Mesh(ringGeometry, ringMaterial);
+
+  // Add animation properties
+  ringMesh.userData.initialScale = 0.1; // Start small again
+  ringMesh.userData.maxScale = 2.0;
+  ringMesh.userData.animationSpeed = 0.02;
+  ringMesh.scale.set(
+    ringMesh.userData.initialScale,
+    ringMesh.userData.initialScale,
+    ringMesh.userData.initialScale
+  );
+
+  ring.add(ringMesh);
+  ring.position.copy(elevatedPosition);
+
+  // Make the ring align with the surface of the Earth
+  const lookAtPoint = position.clone();
+  ring.lookAt(lookAtPoint);
+
+  return ring;
+}
 
 const fontLoader = new THREE.FontLoader();
 fontLoader.load(
@@ -185,9 +239,9 @@ fontLoader.load(
       hitArea.userData = location;
       markers.push(hitArea);
 
-      // Create visible pin head
-      const pinHead = new THREE.Mesh(markerGeometry, markerMaterial.clone());
-      pinHead.position.copy(pinPosition);
+      // Create radiating ring marker
+      const ring = createRadiatingRing(pinPosition);
+      ring.lookAt(surfacePosition);
 
       // Create pin line
       const lineGeometry = new THREE.BufferGeometry().setFromPoints([
@@ -199,7 +253,7 @@ fontLoader.load(
 
       // Add all elements to earth group
       earthGroup.add(hitArea);
-      earthGroup.add(pinHead);
+      earthGroup.add(ring);
       earthGroup.add(line);
 
       // Create label
@@ -289,26 +343,45 @@ document.getElementById("rotateButton").addEventListener("click", () => {
 function animate() {
   requestAnimationFrame(animate);
 
-  // Add smooth rotation here
   if (rotateObjects) {
     earthGroup.rotation.y += 0.0005;
     starSystem.rotation.y += 0.0002;
   }
 
-  // Update all text meshes to face camera
+  // Animate the radiating rings
   earthGroup.traverse((object) => {
+    if (object.geometry instanceof THREE.RingGeometry) {
+      const userData = object.userData;
+      if (userData.initialScale !== undefined) {
+        // Update scale
+        object.scale.x += userData.animationSpeed;
+        object.scale.y += userData.animationSpeed;
+        object.scale.z += userData.animationSpeed;
+
+        // Update opacity based on scale
+        const progress =
+          (object.scale.x - userData.initialScale) /
+          (userData.maxScale - userData.initialScale);
+        object.material.opacity = 1 * (1 - progress * 0.8); // Keep more opacity throughout animation
+
+        // Reset when reaching max scale
+        if (object.scale.x >= userData.maxScale) {
+          object.scale.set(
+            userData.initialScale,
+            userData.initialScale,
+            userData.initialScale
+          );
+          object.material.opacity = 1;
+        }
+      }
+    }
+
+    // Existing text billboard code
     if (
       object instanceof THREE.Mesh &&
       object.geometry instanceof THREE.TextGeometry
     ) {
-      // Get the world position of the text
-      const worldPos = new THREE.Vector3();
-      object.getWorldPosition(worldPos);
-
-      // Make the text look at the camera
       object.lookAt(camera.position);
-
-      // Counter-rotate for the earth's rotation to maintain correct orientation
       object.rotation.y += earthGroup.rotation.y;
     }
   });
