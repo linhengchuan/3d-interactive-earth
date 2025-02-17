@@ -1,0 +1,58 @@
+.control-panel {
+  position: fixed;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  z-index: 9999;
+}
+
+.control-btn {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: fixed;
+  left: 20px;
+  z-index: 9999;
+}
+
+.control-btn i {
+  font-size: 20px;
+  color: #000;
+}
+
+.control-btn:hover {
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+#refreshButton {
+  border: 2px solid #ff0000;
+  top: 35%;
+}
+
+#rotateButton {
+  border: 2px solid #00ff00;
+  top: 45%;
+}
+
+.rotating i {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

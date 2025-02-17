@@ -58,7 +58,7 @@ scene.add(pointLight);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
-controls.minDistance = 8;
+controls.minDistance = 12;
 controls.maxDistance = 30;
 
 // Create earth model
@@ -282,6 +282,7 @@ let rotateObjects = false; // Track whether rotation is enabled
 // Add rotation toggle functionality
 document.getElementById("rotateButton").addEventListener("click", () => {
   rotateObjects = !rotateObjects;
+  document.getElementById("rotateButton").classList.toggle("rotating");
 });
 
 // Animation loop
