@@ -18,6 +18,16 @@ export class UI {
       closeButton.addEventListener("click", () => this.hidePopup());
     }
 
+    // Add click event listener for clicking outside
+    document.addEventListener("click", (event) => {
+      if (this.popup && this.popup.style.display === "block") {
+        // Check if click is outside the popup
+        if (!this.popup.contains(event.target)) {
+          this.hidePopup();
+        }
+      }
+    });
+
     // Initialize callbacks
     this.refreshCallback = null;
     this.rotateToggleCallback = null;
