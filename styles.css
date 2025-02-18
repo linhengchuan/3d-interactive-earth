@@ -128,3 +128,57 @@ canvas {
 .reset-view-button:hover {
   background-color: #f0f0f0;
 }
+
+.panel {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  display: none;
+  max-width: 300px;
+  z-index: 1000;
+}
+
+#closePanel {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.controls {
+  position: fixed;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1000;
+}
+
+.controls button {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 120px;
+  text-align: left;
+}
+
+.controls button:hover {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.rotating {
+  background: rgba(255, 0, 0, 0.8) !important;
+}

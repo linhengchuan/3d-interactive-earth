@@ -10,11 +10,11 @@
   </head>
   <body>
     <div id="info">Drag to rotate, scroll to zoom</div>
-    <div id="popup" class="popup">
-      <button class="close-button" id="closePanel">×</button>
+    <div class="controls"></div>
+    <div id="popup" class="panel">
+      <button id="closePanel">×</button>
       <div id="panelContent"></div>
     </div>
-    <!-- <div id="reset-view-button" class="reset-view-button">Reset</div> -->
     <div class="control-panel">
       <button id="refreshButton" class="control-btn" title="Reset View">
         <i class="fas fa-sync-alt"></i>
@@ -23,6 +23,6 @@
         <i class="fas fa-redo"></i>
       </button>
     </div>
-    <script src="./index.js" type="module"></script>
+    <script type="module" src="./src/main.js"></script>
   </body>
 </html>
