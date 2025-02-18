@@ -47,7 +47,7 @@ export class Markers {
     marker.userData = location;
 
     // Create hit area for better click detection
-    const hitAreaGeometry = new THREE.SphereGeometry(0.4); // Larger invisible sphere for easier clicking
+    const hitAreaGeometry = new THREE.SphereGeometry(0.4);
     const hitAreaMaterial = new THREE.MeshBasicMaterial({
       transparent: true,
       opacity: 0,
@@ -72,13 +72,23 @@ export class Markers {
     );
     textMesh.position.copy(labelPosition);
 
-    // Make text billboard (always face camera)
+    // Updated billboard behavior
     textMesh.onBeforeRender = (renderer, scene, camera) => {
-      textMesh.lookAt(camera.position);
-      textMesh.rotation.y += this.earthGroup.rotation.y;
+      // Get the direction from the text to the camera
+      const cameraDirection = new THREE.Vector3()
+        .subVectors(camera.position, textMesh.position)
+        .normalize();
+
+      // Make text face the camera
+      textMesh.quaternion.copy(camera.quaternion);
+
+      // Counter-rotate for Earth's rotation to maintain correct orientation
+      const earthRotation = new THREE.Quaternion();
+      this.earthGroup.getWorldQuaternion(earthRotation);
+      textMesh.quaternion.multiply(earthRotation.invert());
     };
 
-    this.markers.push(hitArea); // Add hit area to markers array instead of the visual marker
+    this.markers.push(hitArea);
     this.earthGroup.add(marker);
     this.earthGroup.add(hitArea);
     this.earthGroup.add(textMesh);
