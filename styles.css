@@ -1,0 +1,184 @@
+.control-panel {
+  position: fixed;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  z-index: 9999;
+}
+
+.control-btn {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: fixed;
+  left: 20px;
+  z-index: 9999;
+}
+
+.control-btn i {
+  font-size: 20px;
+  color: #000;
+}
+
+.control-btn:hover {
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+#refreshButton {
+  border: 2px solid #ff0000;
+  top: 35%;
+}
+
+#rotateButton {
+  border: 2px solid #00ff00;
+  top: 45%;
+}
+
+.rotating i {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+body {
+  margin: 0;
+}
+
+canvas {
+  display: block;
+}
+
+#info {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: rgb(172, 39, 206);
+  font-family: Arial, sans-serif;
+}
+
+.popup {
+  display: none;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 300px;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  color: rgb(31, 188, 17);
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: rgb(31, 188, 17);
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.marker-label {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.8);
+  color: rgb(66, 20, 217);
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  pointer-events: none;
+  display: none;
+}
+
+.reset-view-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background-color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1000;
+  font-family: Arial, sans-serif;
+  transition: background-color 0.3s;
+}
+
+.reset-view-button:hover {
+  background-color: #f0f0f0;
+}
+
+.panel {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  display: none;
+  max-width: 300px;
+  z-index: 1000;
+}
+
+#closePanel {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.controls {
+  position: fixed;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1000;
+}
+
+.controls button {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 120px;
+  text-align: left;
+}
+
+.controls button:hover {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.rotating {
+  background: rgba(255, 0, 0, 0.8) !important;
+}
