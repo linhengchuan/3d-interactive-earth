@@ -9,16 +9,16 @@ export const locations = [
       {
         id: "marina-bay",
         name: "Marina Bay Sands",
-        x: 65, // percentage from left
-        y: 60, // percentage from top
+        x: 56, // percentage from left
+        y: 70, // percentage from top
         description:
           "Marina Bay Sands is an integrated resort fronting Marina Bay in Singapore.",
       },
       {
         id: "gardens-by-bay",
         name: "Gardens by the Bay",
-        x: 70,
-        y: 65,
+        x: 57,
+        y: 72,
         description:
           "Gardens by the Bay is a nature park spanning 101 hectares in central Singapore.",
       },
